@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 243 245 240;
+    --surface: 255 255 255;
+    --ink: 11 15 20;
+    --muted: 92 102 116;
+    --line: 15 23 42;
+    --lime: 88 160 0;
+    --cyan: 8 145 178;
+    --ember: 234 88 12;
+    --violet: 124 58 237;
+    /* Darker shades for text/icons so they keep 4.5:1 contrast on light surfaces */
+    --lime-text: 62 112 0;
+    --cyan-text: 11 100 126;
+    --ember-text: 172 56 10;
+    --violet-text: 109 40 217;
+    color-scheme: light;
+  }
+  .dark {
+    --bg: 8 10 14;
+    --surface: 22 27 35;
+    --ink: 240 244 248;
+    --muted: 148 160 175;
+    --line: 255 255 255;
+    --lime: 198 255 61;
+    --cyan: 34 228 255;
+    --ember: 255 120 64;
+    --violet: 167 139 250;
+    --lime-text: var(--lime);
+    --cyan-text: var(--cyan);
+    --ember-text: var(--ember);
+    --violet-text: var(--violet);
+    color-scheme: dark;
+  }
+
+  html {
+    /* framer-motion's useScroll measures against the root scroll container */
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    background: rgb(var(--lime) / 0.35);
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgb(var(--surface) / 0.6);
+    border: 1px solid rgb(var(--line) / 0.08);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    @apply rounded-3xl shadow-card;
+  }
+  .glass-hover {
+    @apply transition duration-300 will-change-transform;
+  }
+  .glass-hover:hover {
+    transform: translateY(-4px);
+    border-color: rgb(var(--lime) / 0.35);
+    box-shadow: 0 20px 50px -20px rgb(var(--lime) / 0.35);
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, rgb(var(--lime-text)), rgb(var(--cyan-text)), rgb(var(--lime-text)));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-display font-semibold
+      transition duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime/70 focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+  }
+  .btn-primary {
+    @apply btn text-[#0A0D12];
+    background: linear-gradient(100deg, #c6ff3d 0%, #7dffa0 50%, #22e4ff 100%);
+    box-shadow: 0 10px 30px -10px rgb(198 255 61 / 0.6);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 14px 40px -8px rgb(198 255 61 / 0.75);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    @apply btn text-ink;
+    background: rgb(var(--line) / 0.06);
+    border: 1px solid rgb(var(--line) / 0.1);
+  }
+  .btn-ghost:hover {
+    background: rgb(var(--line) / 0.1);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden rounded-xl;
+    background: rgb(var(--line) / 0.07);
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(var(--line) / 0.08), rgb(var(--lime) / 0.06), transparent);
+    animation: skeleton-sweep 1.6s ease-in-out infinite;
+  }
+  @keyframes skeleton-sweep {
+    100% { transform: translateX(100%); }
+  }
+
+  .field {
+    @apply w-full rounded-2xl border border-line/10 bg-surface/60 px-4 py-3.5 text-ink outline-none backdrop-blur-xl transition
+      placeholder:text-muted focus:border-lime/50 focus:ring-4 focus:ring-lime/10;
+  }
+
+  .label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-muted;
+  }
+}
+
+@layer utilities {
+  .bg-aurora {
+    background:
+      radial-gradient(60rem 40rem at 10% -10%, rgb(var(--lime) / 0.14), transparent 60%),
+      radial-gradient(50rem 40rem at 110% 10%, rgb(var(--cyan) / 0.13), transparent 60%),
+      radial-gradient(40rem 30rem at 50% 120%, rgb(var(--violet) / 0.1), transparent 60%);
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(rgb(var(--line) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--line) / 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

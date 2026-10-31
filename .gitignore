@@ -1,0 +1,11 @@
+node_modules
+dist
+.vercel
+
+# secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# local Postgres data (npm run dev)
+.pgdata
