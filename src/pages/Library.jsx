@@ -16,14 +16,81 @@ const GROUP_META = {
   Cardio: { Icon: HeartPulse, tint: 'from-ember/30 to-violet/10' },
 }
 
-// Photos where we have them; neon illustrations for the rest.
+// One image per muscle group, shown once above the cards (photos where we have them).
+// `thumb` is the small 5:3 crop for the browse strip; `banner` the wide one; `focus` keeps the athlete in frame.
 const GROUP_IMAGE = {
-  Chest: 'chest.svg',
-  Back: 'back.webp',
-  Legs: 'legs.webp',
-  Arms: 'arms.webp',
-  Core: 'core.webp',
-  Cardio: 'cardio.webp',
+  Chest: { thumb: 'chest.svg', banner: 'chest.svg', focus: 'center', blurb: 'Press, fly and push your way to a stronger chest.' },
+  Back: { thumb: 'back.webp', banner: 'banner-back.webp', focus: 'center 30%', blurb: 'Pull, row and hinge for a powerful back.' },
+  Legs: { thumb: 'legs.webp', banner: 'banner-legs.webp', focus: 'center 30%', blurb: 'Squats, lunges and hinges to build a strong base.' },
+  Arms: { thumb: 'arms.webp', banner: 'banner-arms.webp', focus: 'center 25%', blurb: 'Curls and presses for bigger, stronger arms.' },
+  Core: { thumb: 'core.webp', banner: 'banner-core.webp', focus: 'center 20%', blurb: 'Bracing and stability that carries over to every lift.' },
+  Cardio: { thumb: 'cardio.webp', banner: 'banner-cardio.webp', focus: 'center 30%', blurb: 'Intervals and conditioning to build your engine.' },
+}
+
+function GroupBanner({ group, counts, onPick }) {
+  if (group === 'All') {
+    return (
+      <div className="mb-6">
+        <p className="label mb-3">Browse by muscle group</p>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-6">
+          {Object.entries(GROUP_IMAGE).map(([g, img]) => (
+            <button
+              key={g}
+              onClick={() => onPick(g)}
+              className="group relative overflow-hidden rounded-2xl border border-line/10 text-left"
+              aria-label={`Show ${g} exercises`}
+            >
+              <img
+                src={`/images/${img.thumb}`}
+                alt=""
+                loading="lazy"
+                width="400"
+                height="240"
+                className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-110"
+              />
+              <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <span className="absolute inset-x-0 bottom-0 p-2.5 sm:p-3">
+                <span className="block font-display text-sm font-bold text-white sm:text-base">{g}</span>
+                <span className="block text-[11px] text-white/70">{counts[g]} exercises</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const img = GROUP_IMAGE[group]
+  const { Icon } = GROUP_META[group]
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={group}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="relative mb-6 overflow-hidden rounded-3xl border border-line/10 shadow-card"
+      >
+        <img
+          src={`/images/${img.banner}`}
+          alt={`${group} training`}
+          width="1376"
+          height="768"
+          className="aspect-[16/9] w-full object-cover sm:aspect-[21/8]"
+          style={{ objectPosition: img.focus }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
+        <div className="absolute inset-y-0 left-0 flex max-w-md flex-col justify-end p-5 sm:justify-center sm:p-8">
+          <span className="chip mb-3 w-fit bg-white/10 text-white backdrop-blur">
+            <Icon size={14} className="text-[#C6FF3D]" /> {counts[group]} exercises
+          </span>
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">{group}</h2>
+          <p className="mt-1.5 text-sm text-white/80 sm:text-base">{img.blurb}</p>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  )
 }
 
 function formatRest(s) {
@@ -164,6 +231,8 @@ export default function Library() {
         })}
       </div>
 
+      {!loading && !error && exercises.length > 0 && !query.trim() && <GroupBanner group={group} counts={counts} onPick={setGroup} />}
+
       {loading ? (
         <LibrarySkeleton />
       ) : error ? (
@@ -202,25 +271,15 @@ export default function Library() {
                   className={`glass glass-hover group relative flex flex-col overflow-hidden p-5 ${added ? '!border-lime/40' : ''}`}
                 >
                   <div className={`pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-gradient-to-br ${tint} blur-2xl transition duration-500 group-hover:scale-125`} />
-                  <div className="relative -mx-1 -mt-1 overflow-hidden rounded-2xl border border-line/10">
-                    <img
-                      src={`/images/${GROUP_IMAGE[e.muscle_group]}`}
-                      alt={`${e.muscle_group} exercise illustration`}
-                      loading="lazy"
-                      width="400"
-                      height="240"
-                      className="aspect-[5/3] w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="relative mt-4 flex items-center justify-between gap-3">
-                    <span className="chip border border-line/10 bg-line/5 text-ink">
-                      <Icon size={14} className="text-lime" /> {e.muscle_group}
-                    </span>
+                  <div className="relative flex items-start justify-between gap-3">
+                    <div className="grid h-12 w-12 place-items-center rounded-2xl border border-line/10 bg-line/5">
+                      <Icon size={22} className="text-lime" />
+                    </div>
                     <LevelBadge level={e.difficulty} />
                   </div>
-                  <h3 className="relative mt-3 text-lg font-semibold leading-tight">{e.name}</h3>
+                  <h3 className="relative mt-4 text-lg font-semibold leading-tight">{e.name}</h3>
                   <p className="relative mt-1 line-clamp-2 text-sm text-muted">
-                    {e.description}
+                    <span className="font-medium text-ink/80">{e.muscle_group}</span> · {e.description}
                   </p>
 
                   <div className="relative mt-4 grid grid-cols-3 gap-2 text-center">
@@ -229,8 +288,8 @@ export default function Library() {
                       ['Reps', e.reps],
                       ['Rest', formatRest(e.rest_seconds)],
                     ].map(([k, v]) => (
-                      <div key={k} className="rounded-xl bg-line/[0.05] px-2 py-2">
-                        <p className="truncate font-display text-base font-bold tabular-nums">{v}</p>
+                      <div key={k} className="flex flex-col justify-center rounded-xl bg-line/[0.05] px-2 py-2">
+                        <p className={`font-display font-bold leading-tight tabular-nums ${String(v).length > 6 ? 'text-sm' : 'text-base'}`}>{v}</p>
                         <p className="text-[11px] uppercase tracking-wider text-muted">{k}</p>
                       </div>
                     ))}
