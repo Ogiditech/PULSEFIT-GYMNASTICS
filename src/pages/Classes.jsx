@@ -140,9 +140,19 @@ export default function Classes() {
                 <motion.article
                   key={c.id}
                   variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
-                  className={`glass glass-hover relative overflow-hidden p-5 ${booked ? '!border-lime/40' : ''}`}
+                  className={`glass glass-hover group relative overflow-hidden p-5 ${booked ? '!border-lime/40' : ''}`}
                 >
                   <div className={`pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full ${s.glow} blur-3xl`} />
+                  <div className="relative -mx-1 -mt-1 mb-4 overflow-hidden rounded-2xl border border-line/10">
+                    <img
+                      src={`/images/class-${c.type.toLowerCase()}.svg`}
+                      alt={`${c.type} class illustration`}
+                      loading="lazy"
+                      width="500"
+                      height="200"
+                      className="aspect-[5/2] w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
                   <div className="relative flex gap-4">
                     <div className="flex w-16 shrink-0 flex-col items-center justify-center rounded-2xl border border-line/10 bg-line/5 py-3">
                       <span className="font-display text-lg font-bold tabular-nums">{c.time}</span>

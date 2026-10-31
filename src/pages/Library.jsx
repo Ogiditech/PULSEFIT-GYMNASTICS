@@ -16,6 +16,16 @@ const GROUP_META = {
   Cardio: { Icon: HeartPulse, tint: 'from-ember/30 to-violet/10' },
 }
 
+// Photos where we have them; neon illustrations for the rest.
+const GROUP_IMAGE = {
+  Chest: 'chest.svg',
+  Back: 'back.webp',
+  Legs: 'legs.webp',
+  Arms: 'arms.webp',
+  Core: 'core.webp',
+  Cardio: 'cardio.webp',
+}
+
 function formatRest(s) {
   return s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : `${s}s`
 }
@@ -192,15 +202,25 @@ export default function Library() {
                   className={`glass glass-hover group relative flex flex-col overflow-hidden p-5 ${added ? '!border-lime/40' : ''}`}
                 >
                   <div className={`pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-gradient-to-br ${tint} blur-2xl transition duration-500 group-hover:scale-125`} />
-                  <div className="relative flex items-start justify-between gap-3">
-                    <div className="grid h-12 w-12 place-items-center rounded-2xl border border-line/10 bg-line/5">
-                      <Icon size={22} className="text-lime" />
-                    </div>
+                  <div className="relative -mx-1 -mt-1 overflow-hidden rounded-2xl border border-line/10">
+                    <img
+                      src={`/images/${GROUP_IMAGE[e.muscle_group]}`}
+                      alt={`${e.muscle_group} exercise illustration`}
+                      loading="lazy"
+                      width="400"
+                      height="240"
+                      className="aspect-[5/3] w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="relative mt-4 flex items-center justify-between gap-3">
+                    <span className="chip border border-line/10 bg-line/5 text-ink">
+                      <Icon size={14} className="text-lime" /> {e.muscle_group}
+                    </span>
                     <LevelBadge level={e.difficulty} />
                   </div>
-                  <h3 className="relative mt-4 text-lg font-semibold leading-tight">{e.name}</h3>
+                  <h3 className="relative mt-3 text-lg font-semibold leading-tight">{e.name}</h3>
                   <p className="relative mt-1 line-clamp-2 text-sm text-muted">
-                    <span className="font-medium text-ink/80">{e.muscle_group}</span> · {e.description}
+                    {e.description}
                   </p>
 
                   <div className="relative mt-4 grid grid-cols-3 gap-2 text-center">

@@ -124,6 +124,19 @@ function HeroVisual() {
       <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-lime/25 blur-[90px]" />
       <div className="absolute left-[60%] top-[30%] h-56 w-56 rounded-full bg-cyan/25 blur-[90px]" />
 
+      {/* Athlete photo behind the floating cards */}
+      <motion.img
+        src="/images/hero.webp"
+        alt="Athlete pressing a loaded barbell overhead"
+        width="600"
+        height="720"
+        fetchpriority="high"
+        initial={{ opacity: 0, x: -30, rotate: -10 }}
+        animate={{ opacity: 1, x: 0, rotate: -6 }}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute -left-2 top-16 w-[58%] rounded-[2rem] border border-line/10 shadow-glow sm:-left-8"
+      />
+
       {/* Main card */}
       <motion.div
         initial={{ opacity: 0, y: 40, rotate: -4 }}

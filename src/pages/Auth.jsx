@@ -53,16 +53,26 @@ function AuthLayout({ title, subtitle, children }) {
             <br />
             <span className="text-gradient animate-shimmer">Get stronger.</span>
           </motion.h1>
-          <motion.ul variants={stagger} className="mt-10 space-y-4">
-            {PERKS.map(({ Icon, text }) => (
-              <motion.li key={text} variants={rise} className="flex items-center gap-4 text-lg text-muted">
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-lime/10 text-lime">
-                  <Icon size={20} />
-                </span>
-                {text}
-              </motion.li>
-            ))}
-          </motion.ul>
+          <div className="mt-10 flex items-center gap-8">
+            <motion.ul variants={stagger} className="flex-1 space-y-4">
+              {PERKS.map(({ Icon, text }) => (
+                <motion.li key={text} variants={rise} className="flex items-center gap-4 text-lg text-muted">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-lime/10 text-lime">
+                    <Icon size={20} />
+                  </span>
+                  {text}
+                </motion.li>
+              ))}
+            </motion.ul>
+            <motion.img
+              variants={rise}
+              src="/images/auth.webp"
+              alt="Athlete running on a treadmill"
+              width="400"
+              height="480"
+              className="hidden w-44 shrink-0 animate-floaty rounded-3xl border border-line/10 shadow-glow lg:block"
+            />
+          </div>
         </motion.div>
 
         <motion.div
